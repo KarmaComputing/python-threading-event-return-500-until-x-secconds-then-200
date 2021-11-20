@@ -5,7 +5,10 @@ Useful for mock testing eventually alive endpoints
 
 # Usage
 ```
-python3 main.py
+python3 -m venv vev
+. venv/bin/activate
+pip install Flask # flask is not required (see git tags)
+./run.sh
 ```
 
 
