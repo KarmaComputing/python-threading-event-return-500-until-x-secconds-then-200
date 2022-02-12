@@ -9,7 +9,7 @@ import sys
    Useful for mock testing eventually alive endpoints
 """
 
-from flask import Flask
+from flask import Flask, render_template, redirect, url_for
 
 app = Flask(__name__)
 
@@ -17,8 +17,20 @@ status_code = 500
 
 
 @app.route("/")
+def index():
+    reset_timer()
+    return render_template("wait.html")
+
+
+@app.route("/wait")
 def eventually_200():
     return f"{status_code}", status_code
+
+
+@app.route("/reset")
+def reset():
+    """Reset timer to fake url returning 500 again until x secconds"""
+    return redirect(url_for("index"))
 
 
 def task1(event, timeout=None):
@@ -46,18 +58,24 @@ def set_status_code(code=500):
     status_code = code
 
 
-try:
-    event = threading.Event()
-    thread1 = threading.Thread(target=task1, args=(event,))
-    thread1.start()
+def reset_timer():
+    try:
+        set_status_code(500)
+        event = threading.Event()
+        thread1 = threading.Thread(target=task1, args=(event,))
+        thread1.start()
 
-    thread2 = threading.Thread(target=task2, args=(event,))
-    thread2.start()
+        thread2 = threading.Thread(target=task2, args=(event,))
+        thread2.start()
 
-    Timer(3.0, setEvent, args=(event,)).start()
-except KeyboardInterrupt:
-    print("\nexiting...")
-    sys.exit(0)
+        Timer(3.0, setEvent, args=(event,)).start()
+    except KeyboardInterrupt:
+        print("\nexiting...")
+        sys.exit(0)
+
+
+reset_timer()
+
 
 # See
 # - https://docs.python.org/3/library/threading.html#threading.Event

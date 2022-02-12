@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Fetch url until it responds with a 200 status code</h1>
+    <em>Watch devtools "Console" tab whilst you do this!</em>
+    <button id="start">Get url</button>
+
+    <hr/>
+    <a href="/reset">Reset</a> - Make the url fail with 500 for x seconds
+<script>
+  maxAttempts = 10000;
+  attempts = 0;
+
+  function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function checkResponse(response, url, callback) {
+    if (attempts >= maxAttempts) {
+      alert("Failed to connect to url.");
+      return;
+    }
+    if (response.status == 200) {
+      console.log("status: ", response.status, " fetch success for ", url);
+      callback();
+     } else {
+      attempts++
+      console.log("status: ", response.status, " fetch fail for ", url, "...retrying");
+      setTimeout(() => waitForSiteToBeReady(url, callback), getRandomNumber(0,1000));
+     }
+  }
+
+ function waitForSiteToBeReady(url, callback) {
+   console.log("waitForSiteToBeReady...");
+   fetch(url)
+   .then(response => checkResponse(response, url, callback))
+   .catch((error) => { console.error(error)});
+ }
+
+  function check_url_until_ready(e) {
+    document.getElementById('start').textContent = "Please wait...";
+    console.log("Renaming shop...");
+    const url = "http://127.0.0.1:5000/wait";
+    waitForSiteToBeReady(url, mycallback);
+  }
+
+  function mycallback() {
+    document.getElementById('start').textContent = "Done!";
+  }
+
+  // When the user clicks save, start checking url until it responds 200 response code
+  document.getElementById('start').addEventListener('click', check_url_until_ready);
+</script>
+  </body>
+</html>
