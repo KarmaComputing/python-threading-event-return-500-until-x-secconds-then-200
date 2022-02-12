@@ -40,7 +40,7 @@
   function check_url_until_ready(e) {
     document.getElementById('start').textContent = "Please wait...";
     console.log("Renaming shop...");
-    const url = "http://127.0.0.1:5000/wait";
+    const url = "/wait";
     waitForSiteToBeReady(url, mycallback);
   }
 
