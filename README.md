@@ -3,6 +3,11 @@
 Print 500 until event is set (timer expires), then print 200.
 Useful for mock testing eventually alive endpoints
 
+# Video
+
+- https://youtu.be/tXcAaKUCHJI
+- https://www.youtube.com/watch?v=hcpPdoYCwFY
+
 # Usage
 ```
 python3 -m venv vev
